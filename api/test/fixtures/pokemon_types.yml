@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ds_type: MyString
+  pokemon: one
+
+two:
+  ds_type: MyString
+  pokemon: two
