@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Col, Row, ListGroup, Image, Button, Form } from "react-bootstrap";
 
 import api from '../services/api';
+import ListDataPokemon from '../components/ListDataPokemon';
 
 const Information = ({ match }) => {
     
@@ -10,7 +11,6 @@ const Information = ({ match }) => {
     const [change, setChange] = useState(false);
     const [types, setTypes] = useState([]);
     const [evolutions, setEvolutions] = useState([]);
-    const [listTypes, setListTypes] = useState([]);
 
     const updatePokemon = async () => {
         const response = await api.put(`pokemons/${pokemon.id}`, {
@@ -18,43 +18,17 @@ const Information = ({ match }) => {
         });
 
         if(response){
-            setChange(false);
-            getInformation(match.params.id);
-            getType(match.params.id);
-            getEvolutions(match.params.id);
-        }
-    }
-
-    const renderListTypes = () => {
-        let list = []
-        console.log(types);
-
-        if(change){
-            list = types.map((type, index) => {
-                return (
-                    <tr key={index}>
-                        <td>{type.ds_type}</td>
-                        <td>
-                        <Button
-                                variant="danger"
-                                onClick={() => {}}
-                            >
-                                Remover
-                            </Button>  
-                        </td>
-                    </tr>
-                );
+            const response = await api.post(`pokemon_types/alterTypes/${pokemon.id}`, {
+                types
             });
-        } else {
-            list = types.map((type, index) => {
-                console.log(type);
-                return (<ListGroup.Item key={index}>{type.ds_type}</ListGroup.Item>);
-            })
 
-            console.log(list);
-        } 
-
-        setListTypes(list);
+            if(response){
+                setChange(false);
+                getInformation(match.params.id);
+                getType(match.params.id);
+                getEvolutions(match.params.id);
+            }            
+        }
     }
 
     const getInformation = async (id) => {
@@ -78,7 +52,6 @@ const Information = ({ match }) => {
         getInformation(match.params.id);
         getType(match.params.id);
         getEvolutions(match.params.id);
-        renderListTypes();
     }, []);
 
     return (
@@ -90,7 +63,13 @@ const Information = ({ match }) => {
                         <Card.Header align="right">
                             <Button
                                 variant="info"
-                                onClick={() => { setChange(!change); setName(pokemon.name) }}
+                                onClick={() => { 
+                                    if(change){
+                                        getType(match.params.id);
+                                    }
+                                    setChange(!change); 
+                                    setName(pokemon.name);
+                                }}
                             >
                                 {change ? 'Cancelar' : 'Alterar'}
                             </Button>
@@ -113,28 +92,7 @@ const Information = ({ match }) => {
                                 }
                             </Card.Title>
                         </Card.Body>
-                        <ListGroup className="list-group-flush">
-                            <ListGroup.Item style={{ fontSize: 20, fontWeight: 'bold' }}>Tipo(s):</ListGroup.Item>
-                            {
-                                types.map((type, index) => {
-                                    return <ListGroup.Item key={index}>{type.ds_type}</ListGroup.Item>
-                                })
-                                // listTypes
-                            }
-                            
-                            <ListGroup.Item style={{ fontSize: 20, fontWeight: 'bold' }}>Evoluções:</ListGroup.Item>
-                            {   
-                                (evolutions.length > 0) ?
-                                    (evolutions[evolutions.length - 1][0].name != pokemon.name) ?
-                                        evolutions.map((evolution, index) => {
-                                            if(evolution[0].name != pokemon.name){
-                                                return <ListGroup.Item key={index}>{evolution[0].name} <Image src={evolution[0].url_photo} /></ListGroup.Item>
-                                            }
-                                        })
-                                    :  null
-                                : null
-                            }
-                        </ListGroup>
+                        <ListDataPokemon types={types} pokemon={pokemon} evolutions={evolutions} change={change} setTypes={setTypes} />
                     </Card>
                 </Col>                            
             }

@@ -46,6 +46,17 @@ module Api
         end
       end
 
+      def alterTypes
+        PokemonType.where('pokemon_id = ? ', params[:id]).delete_all
+        params[:types].each do |type|
+          objectType = {
+            "ds_type":        type["ds_type"],
+            "pokemon_id":  params[:id]
+          }
+          PokemonType.create!(objectType);
+        end
+      end
+
       # DELETE /pokemon_types/1
       def destroy
         @pokemon_type.destroy
