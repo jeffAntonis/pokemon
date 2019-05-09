@@ -9,6 +9,11 @@ module Api
 				render json: {status: 'SUCCESS', message:'Tipos carregados', data:types},status: :ok
       end
 
+      def getTypesCombo
+        types = PokemonType.select('DISTINCT ds_type').order('ds_type ASC')
+				render json: {status: 'SUCCESS', message:'Tipos carregados', data:types},status: :ok
+      end
+
       # GET /pokemon_types
       def index
         @pokemon_types = PokemonType.all

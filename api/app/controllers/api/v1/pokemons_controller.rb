@@ -28,10 +28,25 @@ module Api
 				end
 			end
 
+			# PATCH/PUT /pokemons/1
+			def update
+				pokemon = Pokemon.where('id = ? ', params[:id]).update(pokemon_params)
+				render json: pokemon
+			end
+
+			def destroy
+				PokemonType.where('pokemon_id = ? ', params[:id]).delete_all
+				PokemonEvolution.where('pokemon_id = ? ', params[:id]).delete_all
+				Pokemon.where('id = ? ', params[:id]).delete_all
+			end
 
 			# Criar um novo pokemon
 			def teste
 				render json: {status: 'SUCCESS', message:'Pokemon Criado', data: {}},status: :ok
+			end
+
+			def pokemon_params
+				params.require(:pokemon).permit(:name, :url_photo)
 			end
 		end
 	end

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
       resources :pokemon_types
       get '/getTypes/:id' => 'pokemon_types#getTypes'
+      get '/getTypesCombo/' => 'pokemon_types#getTypesCombo'
 
       resources :pokemon_evolutions
       get '/getEvolutions/:id' => 'pokemon_evolutions#getEvolutions'

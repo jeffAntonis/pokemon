@@ -28,6 +28,16 @@ const Home = () => {
         }
     }
 
+    const removePokemon = async (id) => {
+        const response = await api.delete(`pokemons/${id}`);
+
+        console.log(response);
+        if(response.status == 204){
+            alert("Pokemon excluído com sucesso");
+            getPokemons();
+        }
+    }
+
     useEffect(() => {
         getPokemons();
     }, []);
@@ -62,6 +72,14 @@ const Home = () => {
                                 <Card.Body>
                                     <Card.Title><a href={"/" + pokemons.id}>{pokemons.name}</a></Card.Title>
                                 </Card.Body>
+                                <Card.Footer>
+                                    <Button
+                                        variant="danger"
+                                        onClick={() => removePokemon(pokemons.id)}
+                                    >
+                                        Remover
+                                    </Button>
+                                </Card.Footer>
                             </Card>
                         </Col>          
                     );

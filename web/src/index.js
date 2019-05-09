@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Information from './pages/Information';
 import Menu from './components/Menu';
 import * as serviceWorker from './serviceWorker';
+import Create from './pages/Create';
 
 ReactDOM.render(
     <>
@@ -15,6 +16,7 @@ ReactDOM.render(
             <BrowserRouter>
                 <Switch>
                     <Route path="/" exact={true} component={Home} />
+                    <Route path="/create" exact={true} component={Create} />
                     <Route path="/:id" component={Information} />
                 </Switch>
                 {/* <App /> */}
