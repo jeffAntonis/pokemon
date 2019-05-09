@@ -3,9 +3,9 @@ import { ListGroup, Image, Container } from "react-bootstrap";
 import ListTypes from './ListTypes';
 import ListTypesAlter from './ListTypesAlter';
 
-export default ({ types, pokemon, evolutions, change, setTypes }) => {
+export default ({ types, pokemon, evolutions, change, setTypes, setEvolutions }) => {
     if(change){
-        return (<ListAlter types={types} pokemon={pokemon} evolutions={evolutions} setTypes={setTypes} />);
+        return (<ListAlter types={types} pokemon={pokemon} evolutions={evolutions} setTypes={setTypes} setEvolutions={setEvolutions} />);
     } else{
         return (<ListView types={types} pokemon={pokemon} evolutions={evolutions}  />);
     }
@@ -30,8 +30,8 @@ const ListView = ({ types, pokemon, evolutions }) => (
     </ListGroup>
 );
 
-const ListAlter = ({ types, pokemon, evolutions, setTypes }) => (
+const ListAlter = ({ types, pokemon, evolutions, setTypes, setEvolutions }) => (
     <Container>
-        <ListTypesAlter types={types} setTypes={setTypes} />
+        <ListTypesAlter types={types} setTypes={setTypes} evolutions={evolutions} setEvolutions={setEvolutions} pokemon={pokemon} />
     </Container>
 );

@@ -3,14 +3,22 @@ import { Row, Col, Form, Button, Table } from "react-bootstrap";
 
 import api from '../services/api';
 
-export default ({ types, setTypes }) => {
+export default ({ types, setTypes, evolutions, setEvolutions, pokemon }) => {
     const [typesCombo, setTypesCombo] = useState([]);
+    const [evolutionsCombo, setEvolutionsCombo] = useState([]);
     const [typeSelected, setTypeSelected] = useState([]);
+    const [evolutionSelected, setEvolutionSelected] = useState('');
     
     const getTypesCombo = async () => {
         const response = await api.get(`getTypesCombo`);
         
         setTypesCombo(response.data.data);
+    }
+
+    const getEvolutionsCombo = async () => {
+        const response = await api.get(`getEvolutionsCombo`);
+        
+        setEvolutionsCombo(response.data.data);
     }
 
     const addType = () => {
@@ -32,12 +40,36 @@ export default ({ types, setTypes }) => {
         }
     }
 
+    const addEvolution = () => {
+        let aux = evolutions;
+        let exist = false;
+
+        if(evolutionSelected != ""){
+            aux.map((evolution, index) => {
+                if(evolution.pokemon_name_evolution === evolutionSelected){
+                    exist = true;
+                    return;
+                }
+            });
+    
+            if(!exist){
+                aux.push({ 0 : {name: evolutionSelected} });
+                setEvolutionSelected(aux);
+            }
+        }
+    }
+
     const removeType = (typeRemove) => {
         setTypes(types.filter(type => type.ds_type != typeRemove.ds_type));
     }
 
+    const removeEvolution = (evolutionRemove) => {
+        setEvolutions(evolutions.filter(evolution => evolution[0].name != evolutionRemove[0].name));
+    }
+
     useEffect(() => {
         getTypesCombo();
+        getEvolutionsCombo();
     }, []);
     
     return (
@@ -96,6 +128,69 @@ export default ({ types, setTypes }) => {
                 </Table>
             </Col>
         </Row>
+        <br/>
+            <Row>
+                <Col md="10">
+                    <Form.Group>
+                        {/* <Form.Label>Tipo(s)</Form.Label> */}
+                        <Form.Control as="select" onChange={(event) => setEvolutionSelected(event.target.value)}>
+                            <option value="">::SELECIONE::</option>
+                            {
+                                evolutionsCombo.map((evolution, index) => {
+                                    return <option value={evolution.pokemon_name_evolution} key={index}>{evolution.pokemon_name_evolution}</option>
+                                })
+                            }
+                        </Form.Control>
+                    </Form.Group>
+                </Col>
+                <Col md="2">
+                    <Form.Group>
+                        <Button 
+                            variant="primary"
+                            onClick={() => addEvolution()}
+                        >
+                            Relacionar
+                        </Button>        
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row>
+                <Col md="12">
+                    <Table striped bordered hover size="sm">
+                        <thead>
+                            <tr>
+                                <th>Evoluções Relacionados</th>
+                                <th align="left">Remover</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            (evolutions.length > 0) ?
+                                (evolutions[evolutions.length - 1][0].name != pokemon.name) ?
+                                    evolutions.map((evolution, index) => {
+                                        if(evolution[0].name != pokemon.name){
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{evolution[0].name}</td>
+                                                    <td>
+                                                        <Button
+                                                            variant="danger"
+                                                            onClick={() => removeEvolution(evolution)}
+                                                        >
+                                                            Remover
+                                                        </Button>  
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    })
+                                :  null
+                            : null
+                        }
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
         </>
     );
 }

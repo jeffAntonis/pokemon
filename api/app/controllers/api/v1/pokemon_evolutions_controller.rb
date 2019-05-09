@@ -50,6 +50,31 @@ module Api
         end
       end
 
+      def alterEvolutions
+        PokemonEvolution.where('pokemon_id = ? ', params[:id]).delete_all
+        params[:evolutions].each do |evolution|
+
+          p '##########################'
+          p evolution
+          p evolution.size
+          p evolution[0] 
+          p '##########################'
+
+          name = "";
+          if(evolution[0] == nil)
+            name = evolution["0"]["name"]            
+          elsif
+            name = evolution[0]["name"]
+          end
+
+          objectEvolution = {
+            "pokemon_name_evolution":        name,
+            "pokemon_id":  params[:id]
+          }
+          PokemonEvolution.create!(objectEvolution);
+        end
+      end
+
       # DELETE /pokemon_evolutions/1
       def destroy
         @pokemon_evolution.destroy

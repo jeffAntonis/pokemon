@@ -23,6 +23,10 @@ const Information = ({ match }) => {
             });
 
             if(response){
+                const response = await api.post(`pokemon_evolutions/alterEvolutions/${pokemon.id}`, {
+                    evolutions
+                });
+
                 setChange(false);
                 getInformation(match.params.id);
                 getType(match.params.id);
@@ -66,6 +70,7 @@ const Information = ({ match }) => {
                                 onClick={() => { 
                                     if(change){
                                         getType(match.params.id);
+                                        getEvolutions(match.params.id);
                                     }
                                     setChange(!change); 
                                     setName(pokemon.name);
@@ -92,7 +97,7 @@ const Information = ({ match }) => {
                                 }
                             </Card.Title>
                         </Card.Body>
-                        <ListDataPokemon types={types} pokemon={pokemon} evolutions={evolutions} change={change} setTypes={setTypes} />
+                        <ListDataPokemon types={types} pokemon={pokemon} evolutions={evolutions} change={change} setTypes={setTypes} setEvolutions={setEvolutions} />
                     </Card>
                 </Col>                            
             }
