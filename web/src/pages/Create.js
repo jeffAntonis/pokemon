@@ -6,9 +6,13 @@ const Create = () => {
     const [name, setName] = useState('');
     const [urlPhoto, setUrlPhoto] = useState('');
     const [typesCombo, setTypesCombo] = useState([]);
+    const [evolutionsCombo, setEvolutionsCombo] = useState([]);
     const [typeSelected, setTypeSelected] = useState('');
     const [typesSelected, setTypesSelected] = useState([]);
     const [listTypes, setListTypes] = useState([]);
+    const [listEvolutions, setListEvolutions] = useState([]);
+    const [evolutionSelected, setEvolutionSelected] = useState('');
+    const [evolutionsSelected, setEvolutionsSelected] = useState([]);
 
     const createPokemon = async () => {
         const response = await api.post(`pokemons`, {
@@ -23,6 +27,12 @@ const Create = () => {
             typesSelected.map((type) => {
                 if(type != ""){
                     insertTypesPokemon(type, id);
+                }
+            });
+
+            evolutionsSelected.map((evolution) => {
+                if(evolution != ""){
+                    insertEvolutionsPokemon(evolution, id);
                 }
             });
 
@@ -46,6 +56,13 @@ const Create = () => {
         });            
     }
 
+    const insertEvolutionsPokemon = async (evolution, id) => {
+        await api.post(`/pokemon_evolutions`, {
+            pokemon_name_evolution: evolution, 
+            pokemon_id: id
+        });            
+    }
+
     const addType = () => {
         let aux = typesSelected;
         let exist = false;
@@ -63,6 +80,63 @@ const Create = () => {
         }        
         
         renderListTypes();
+    }
+
+    const addEvolution = () => {
+        let aux = evolutionsSelected;
+        let exist = false;
+
+        aux.map((evolution, index) => {
+            if(evolution === evolutionSelected){
+                exist = true;
+                return;
+            }
+        });
+
+        if(!exist){
+            aux.push(evolutionSelected);
+            setEvolutionsSelected(aux);
+        }        
+        
+        renderListEvolutions();
+    }
+
+    const removeEvolution = (evolutionRemove) => {
+        let aux = evolutionsSelected;
+
+        aux.map((evolution, index) => {
+            if(evolution === evolutionRemove){
+                aux.splice(index, 1); 
+            }
+        });
+
+        setEvolutionsSelected(aux);
+
+        renderListEvolutions();
+    }
+
+    const renderListEvolutions = () => {
+        let list = []
+
+        if(evolutionsSelected.length > 0){
+            list = evolutionsSelected.map((evolution, index) => {
+                return (
+                    <tr key={index}>
+                        <td>{evolution}</td>
+                        <td>
+                        <Button
+                                variant="danger"
+                                onClick={() => removeEvolution(evolution)}
+                            >
+                                Remover
+                            </Button>  
+                        </td>
+                    </tr>
+                );
+            });
+        } 
+
+        setListEvolutions(list);
     }
 
     const removeType = (typeRemove) => {
@@ -112,7 +186,15 @@ const Create = () => {
 
         }
 
+        const getEvolutionsCombo = async () => {
+            const response = await api.get(`getEvolutionsCombo`);
+            
+            setEvolutionsCombo(response.data.data);
+
+        }
+
         getTypesCombo();
+        getEvolutionsCombo();
     }, []);
 
 
@@ -180,6 +262,47 @@ const Create = () => {
                         </thead>
                         <tbody>
                             {listTypes}   
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
+            <br/>
+            <Row>
+                <Col md="10">
+                    <Form.Group>
+                        {/* <Form.Label>Tipo(s)</Form.Label> */}
+                        <Form.Control as="select" onChange={(event) => setEvolutionSelected(event.target.value)}>
+                            <option value="">::SELECIONE::</option>
+                            {
+                                evolutionsCombo.map((evolution, index) => {
+                                    return <option value={evolution.pokemon_name_evolution} key={index}>{evolution.pokemon_name_evolution}</option>
+                                })
+                            }
+                        </Form.Control>
+                    </Form.Group>
+                </Col>
+                <Col md="2">
+                    <Form.Group>
+                        <Button 
+                            variant="primary"
+                            onClick={() => addEvolution()}
+                        >
+                            Relacionar
+                        </Button>        
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row>
+                <Col md="12">
+                    <Table striped bordered hover size="sm">
+                        <thead>
+                            <tr>
+                                <th>Evoluções Relacionados</th>
+                                <th align="left">Remover</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listEvolutions}   
                         </tbody>
                     </Table>
                 </Col>

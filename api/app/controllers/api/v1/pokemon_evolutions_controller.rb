@@ -20,6 +20,11 @@ module Api
 				render json: {status: 'SUCCESS', message:'Evoluções carregadas', data:result},status: :ok
       end
 
+      def getEvolutionsCombo
+        evolutions = PokemonEvolution.select('DISTINCT pokemon_name_evolution').order('pokemon_name_evolution ASC')
+				render json: {status: 'SUCCESS', message:'Evoluções carregadas', data:evolutions},status: :ok
+      end
+
       # GET /pokemon_evolutions/1
       def show
         render json: @pokemon_evolution
@@ -58,7 +63,7 @@ module Api
 
         # Only allow a trusted parameter "white list" through.
         def pokemon_evolution_params
-          params.require(:pokemon_evolution).permit(:pokemon_id, :pokemon_id_evolution)
+          params.require(:pokemon_evolution).permit(:pokemon_id, :pokemon_name_evolution)
         end
     end
   end

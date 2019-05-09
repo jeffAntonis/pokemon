@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
       resources :pokemon_evolutions
       get '/getEvolutions/:id' => 'pokemon_evolutions#getEvolutions'
+      get '/getEvolutionsCombo/' => 'pokemon_evolutions#getEvolutionsCombo'
   	end
   end
 end
