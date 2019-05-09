@@ -1,28 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
+import { Provider } from "react-redux";
+import { createStore } from 'redux';
 
-import Home from './pages/Home';
-import Information from './pages/Information';
 import Menu from './components/Menu';
 import * as serviceWorker from './serviceWorker';
-import Create from './pages/Create';
+import Routes from './routes';
+import reducers from './reducers';
 
 ReactDOM.render(
-    <>
+    <Provider store={createStore(reducers)}>
         <Menu />
         <Container role="main" style={{ paddingTop: 20 }}>
-            <BrowserRouter>
-                <Switch>
-                    <Route path="/" exact={true} component={Home} />
-                    <Route path="/create" exact={true} component={Create} />
-                    <Route path="/:id" component={Information} />
-                </Switch>
-                {/* <App /> */}
-            </BrowserRouter>
+            <Routes />
         </Container>
-    </>
+    </Provider>  
     ,document.getElementById('root')
 );
 
